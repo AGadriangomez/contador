@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador Simultáneo</title>
+    <style>
+        .screen {
+            font-size: 150px;
+            margin: 20px;
+            color: red;
+        }
+        body{
+          background-color: black;
+          text-align: center;
+        }
+        button{
+          border-radius: 20px;
+          padding-left: 30px;
+          padding-right: 30px;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          font-size: 20px;
+        
+        }
+    </style>
+</head>
+<body>
+    <div class="screen" id="screen">00</div>
+    <button id="decrement">Anterior</button>
+    <button id="increment">Siguiente</button>
+   <div><button id="reset">Reset</button></div> 
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const updateScreen = (count) => {
+            const formattedCount = String(count).padStart(2, '0');
+            document.getElementById('screen').innerText = formattedCount;
+        };
+
+        socket.on('updateCount', (count) => {
+            updateScreen(count);
+        });
+
+        document.getElementById('increment').onclick = () => {
+            socket.emit('increment');
+        };
+
+        document.getElementById('decrement').onclick = () => {
+            socket.emit('decrement');
+        };
+
+        document.getElementById('reset').onclick = () => {
+            socket.emit('reset');
+        };
+    </script>
+</body>
+</html>
